@@ -16,7 +16,7 @@ export default function Embeddings({
   return (
     <>
       <AddressExample lesson={lesson} lang={lang} />
-      <DimensionGuide lesson={lesson} lang={lang} />
+      <details className="grownup-notes"><summary>{lang === "ml" ? "ഈ രണ്ട് അളവുകൾ എന്താണെന്ന് നോക്കാം" : "What do these two scales mean?"}</summary><DimensionGuide lesson={lesson} lang={lang} /></details>
       <div className="embedding-grid">
         <div className="number-table">
           <div className="number-row table-head">

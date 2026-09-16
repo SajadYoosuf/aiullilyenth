@@ -2,7 +2,7 @@
 
 Repository: **aiullilyenth**
 
-A Malayalam-first, mobile-first visual lesson about language models. React, Vite, TypeScript and Tailwind CSS. No application backend, accounts, analytics or server-held API keys.
+A Malayalam-first, mobile-first visual learning lab for children about large language models (LLMs), one part of AI. ChatGPT, Gemini and Claude are familiar reference examples; only Gemini is integrated for custom lessons. The app teaches simplified concepts rather than exposing any provider's internal model computations. React, Vite, TypeScript and Tailwind CSS. No application backend, accounts, analytics or server-held API keys.
 
 ## Run locally
 
@@ -102,6 +102,12 @@ Import the source repository, use build command `npm run build` and publish dire
 For any static host, serve the entire `dist` directory at the domain root over HTTPS. The service worker and manifest use root-relative paths. A path-prefix deployment needs matching Vite base, manifest scope/start URL and service-worker asset paths.
 
 ## Verification
+
+### Teacher-led learning
+
+Each lesson includes a three-part spoken board demonstration followed by a short check-in question. “Talk me through it” advances the board when each narration segment ends, then waits for the learner. Pause/resume, replay, reading speed, voice selection and independent spoken-language selection are available. Word pieces, coordinate plots, attention bars and continuation choices are interactive. Correct answers explain why; other answers receive a retry hint. Detailed reading remains optional.
+
+Device speech uses the browser's available voices. If Malayalam is missing, an expanded Gemini audio option can generate one scene at a time with the saved API key, followed by native audio controls. It discovers TTS models through Google's model list and converts PCM to WAV for playback. Narration is sent to Google only when Generate is pressed; speech access, quota and charges are separate from text lesson generation. Generated audio stays in memory and is released when the narration changes or the component closes. Device voice and English-audio alternatives remain available. New Gemini lesson instructions request short, conversational Malayalam with concrete examples.
 
 The child-focused experience includes a picture guessing game on the welcome page, a friendly illustrated guide, short activity prompts and large demo story choices. Detailed concepts and research remain under expandable sections; custom-sentence mode is labeled for grown-up assistance. This label is guidance, not an access restriction.
 

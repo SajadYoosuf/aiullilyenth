@@ -1,6 +1,6 @@
 import type { Language } from "../types";
 const strings = {
-  understandFirst: ["ആദ്യം അർത്ഥം മനസ്സിലാക്കാം", "FIRST, UNDERSTAND THE IDEA"],
+  understandFirst: ["ഇതിന്റെ കാര്യം എന്താണെന്നോ?", "LET’S UNDERSTAND THE IDEA"],
   dimensionHeading: [
     "ഈ രണ്ട് പേരുകൾ എന്താണ്?",
     "What do these two labels mean?",
@@ -20,7 +20,7 @@ const strings = {
   less: ["ബന്ധം കുറവ്", "Less connection"],
   moreOf: ["ബന്ധം കൂടുതൽ", "More connection"],
   brand: ["AI ഉള്ളിൽ എന്താണ്?", "AI Ullil Enthaanu?"],
-  tagline: ["A LITTLE AI LEARNING LAB", "A LITTLE AI LEARNING LAB"],
+  tagline: ["A LITTLE LLM LEARNING LAB", "A LITTLE LLM LEARNING LAB"],
   journey: ["ഒരു ചെറിയ യാത്ര", "A little journey"],
   sidebar: [
     "വാക്കിൽ നിന്ന്\nമറുപടിയിലേക്ക്.",
@@ -50,8 +50,8 @@ const strings = {
     [
       "ആദ്യം, ഒരു വാചകം",
       "ചെറിയ കഷണങ്ങൾ",
-      "അർത്ഥത്തിന് ഒരു വിലാസം",
-      "വാക്കുകൾ കേൾക്കട്ടെ",
+      "വാക്കിനും ഒരു അക്കവിലാസം",
+      "കൂട്ടുകാരായ വാക്കുകൾ",
       "ഇനി, എന്ത് വരും?",
     ],
     [
@@ -64,10 +64,10 @@ const strings = {
   ],
   titles: [
     [
-      "AI-യുടെ ഉള്ളിലേക്ക്\nഒന്ന് നോക്കിയാലോ?",
+      "വാ, ഒരു വാക്യം\nനോക്കിത്തുടങ്ങാം!",
       "വാക്കുകൾ\nകഷണങ്ങളാകുന്നു.",
-      "വാക്കുകൾക്ക്\nഅക്കങ്ങളുടെ വിലാസം.",
-      "കൂടെ നിൽക്കുന്ന\nവാക്കുകൾക്കും കാര്യമുണ്ട്.",
+      "ഈ വാക്ക് മാപ്പിൽ\nഎവിടെ വരും?",
+      "ഈ വാക്കിനൊപ്പം\nആരൊക്കെയുണ്ട്?",
       "ഒരു വാക്ക് കൂടി.\nപിന്നെ, അടുത്തത്.",
     ],
     [
@@ -80,11 +80,11 @@ const strings = {
   ],
   comparisons: [
     [
-      "നിങ്ങൾ എഴുതുന്ന വാക്കുകൾ ഒരു മറുപടിയാകുന്നത് എങ്ങനെ? നമുക്ക് കണ്ടറിയാം.",
-      "പസിലിന്റെ കഷണങ്ങൾ പോലെ, AI വാചകത്തെ ചെറിയ ഭാഗങ്ങളാക്കുന്നു.",
+      "ഒരു വാക്യം എടുത്താലോ? അത് AI എങ്ങനെ ഉപയോഗിക്കുന്നു എന്ന് ഓരോ ചുവടായി നോക്കാം.",
+      "പസിൽ കളിച്ചിട്ടില്ലേ? അതുപോലെ, ഈ വാക്യവും ചെറിയ കഷണങ്ങളാക്കി നോക്കാം.",
       "മാപ്പിൽ latitude, longitude ഒരു സ്ഥലം കാണിക്കുന്നു. അതുപോലെ, നമ്മുടെ പഠനമാപ്പിൽ രണ്ട് അക്കങ്ങൾ ഒരു വാക്കിന്റെ സ്ഥാനം കാണിക്കും. ഒരു ഉദാഹരണം നോക്കാം!",
-      "ഒരു മുറിയിൽ മറ്റുള്ളവരെ കേൾക്കുന്നതുപോലെ, വാക്കുകൾ ചുറ്റുമുള്ള വാക്കുകളെ ശ്രദ്ധിക്കുന്നു.",
-      "ഫോണിലെ കീബോർഡ് പോലെ, അടുത്ത് വരാൻ സാധ്യതയുള്ള വാക്കുകൾ AI കണക്കാക്കുന്നു.",
+      "‘bat’ എന്ന് മാത്രം പറഞ്ഞാൽ ബാറ്റാണോ വവ്വാലാണോ? കൂടെയുള്ള വാക്കുകൾ ഒരു സൂചന തരും!",
+      "ഫോണിൽ എഴുതുമ്പോൾ അടുത്ത വാക്ക് കാണിച്ചുതരാറില്ലേ? അതുപോലെ ചില സാധ്യതകൾ നോക്കാം.",
     ],
     [
       "How do the words you type turn into a reply? Let’s find out, one small step at a time.",
@@ -110,7 +110,7 @@ const strings = {
       "A token is selected and added to the context, then the next token is scored. Models do not always select the highest probability option, and a likely continuation can still be wrong.",
     ],
   ],
-  sentence: ["ഒരു വാചകം എഴുതൂ", "Write a sentence"],
+  sentence: ["എന്താണ് പരീക്ഷിക്കേണ്ടത്? ഇവിടെ എഴുതൂ", "What shall we explore? Type it here"],
   languages: ["മലയാളം · English · Manglish", "Malayalam · English · Manglish"],
   examples: [
     "അല്ലെങ്കിൽ, ഒന്ന് തിരഞ്ഞെടുത്തോളൂ",
@@ -126,7 +126,7 @@ const strings = {
     "Demo lesson · No API key needed",
   ],
   live: ["തത്സമയ പാഠം · നിങ്ങളുടെ Gemini key", "Live lesson · Your Gemini key"],
-  start: ["തുടങ്ങാം", "Let’s explore"],
+  start: ["നമുക്ക് നോക്കാം", "Let’s explore"],
   next: ["അടുത്തത്", "Next step"],
   back: ["പിന്നോട്ട്", "Back"],
   restart: ["വീണ്ടും തുടങ്ങാം", "Explore again"],
@@ -134,7 +134,7 @@ const strings = {
     "കണ്ടു പഠിക്കാം. ചെയ്തു പഠിക്കാം.",
     "Learn by looking. Learn by doing.",
   ],
-  more: ["കൂടുതൽ അറിയാൻ", "A little more to know"],
+  more: ["ഇതെങ്ങനെയാണെന്ന് ഒന്നുകൂടി നോക്കാം", "Let’s look a little closer"],
   exampleOnly: ["ഉദാഹരണം മാത്രം", "Teaching example only"],
   demo: ["ഡെമോ", "Demo"],
   liveMode: ["സ്വന്തം വാചകം", "Live"],
@@ -252,6 +252,7 @@ const strings = {
     "അനുയോജ്യമായ മോഡൽ ലഭ്യമല്ല. വേറൊരു key ശ്രമിക്കൂ.",
     "No supported text model is available. Try another key.",
   ],
+  noSpeechModel: ["ഈ key-യ്ക്ക് speech മോഡൽ ലഭ്യമല്ല. Google AI Studio-യിൽ TTS access പരിശോധിക്കൂ; പാഠത്തിനുള്ള മോഡലും ശബ്ദത്തിനുള്ള മോഡലും വ്യത്യസ്തമാണ്.", "No speech model is available for this key. Check TTS access in Google AI Studio; lesson generation and speech use different models."],
   demoFallback: ["ഡെമോ പാഠം പരീക്ഷിക്കൂ", "Try a demo lesson"],
   addKey: ["Gemini key ചേർക്കൂ", "Add a Gemini key"],
   loading: ["പാഠം ഒരുക്കുന്നു…", "Preparing your lesson…"],
@@ -269,8 +270,8 @@ const strings = {
     "Could not connect. Check your connection. · ബന്ധപ്പെടാൻ കഴിഞ്ഞില്ല",
   ],
   errorBlocked: [
-    "ഈ വാചകം പറ്റില്ല, വേറെ ഒന്ന് ശ്രമിക്കൂ",
-    "ഈ വാചകം പറ്റില്ല, വേറെ ഒന്ന് ശ്രമിക്കൂ · Please try a different sentence.",
+    "ഈ വാക്യത്തിൽ നിന്ന് പാഠം ഉണ്ടാക്കാൻ കഴിഞ്ഞില്ല. ഒരു കളിയെക്കുറിച്ചോ മൃഗത്തെക്കുറിച്ചോ വേറൊരു വാക്യം നോക്കിയാലോ?",
+    "We couldn’t make a lesson from this sentence. Try one about a game or an animal.",
   ],
   errorData: [
     "പാഠം തയ്യാറായില്ല. ഒരു ഡെമോ പരീക്ഷിക്കാം.",

@@ -11,6 +11,7 @@ import Icon from "./components/Icon";
 import ConceptIntro from "./components/ConceptIntro";
 import Foundations from "./components/Foundations";
 import Landing from "./components/Landing";
+import TeacherWalkthrough from "./components/TeacherWalkthrough";
 import {
   chooseModels,
   generateLessonWithRecovery,
@@ -56,6 +57,7 @@ export default function App() {
   const [offlineReady, setOfflineReady] = useState(false);
   const [install, setInstall] = useState<InstallPrompt | null>(null);
   const abort = useRef<AbortController | null>(null);
+  const pendingInput = useRef<string | null>(null);
   const touch = useRef<{ x: number; y: number } | null>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
@@ -300,7 +302,15 @@ export default function App() {
           </button>}
         </div>
       </header>
-      {welcome ? <Landing lang={lang} onStart={() => go(0)} /> : <><div className="workspace">
+      {welcome ? <Landing lang={lang} onStart={() => { pendingInput.current = null; demo(); }} onSetup={() => setSettings(true)} onCustom={(text) => {
+        pendingInput.current = text;
+        if (!config.key) { setSettings(true); return; }
+        setMode("live");
+        setSentence(text);
+        pendingInput.current = null;
+        setError(null);
+        go(0);
+      }} hasKey={Boolean(config.key)} /> : <><div className="workspace">
         <aside>
           <div className="eyebrow">{t(lang, "journey")}</div>
           <h2>{t(lang, "sidebar")}</h2>
@@ -393,7 +403,7 @@ export default function App() {
             </h1>
             <p className="intro">{list(lang, "comparisons")[step]}</p>
             {step === 0 && (
-              <details className="grownup-notes lesson-settings"><summary>{lang === "ml" ? "മുതിർന്നവരുടെ സഹായത്തോടെ: സ്വന്തം വാക്യം" : "With a grown-up: use your own sentence"}</summary>
+              <details className="grownup-notes lesson-settings" open={mode === "live"}><summary>{lang === "ml" ? "മുതിർന്നവരുടെ സഹായത്തോടെ: സ്വന്തം വാക്യം" : "With a grown-up: use your own sentence"}</summary>
               <div
                 className="mode-toggle"
                 role="group"
@@ -471,6 +481,8 @@ export default function App() {
                 <button onClick={cancel}>{t(lang, "cancel")}</button>
               </div>
             )}
+            {(step > 0 || mode === "demo") && <TeacherWalkthrough key={`${step}-${lang}-${lesson.sentence}`} step={step} lang={lang} lesson={lesson} config={config} onSettings={() => setSettings(true)} />}
+            <div id="lesson-activity" tabIndex={-1}>
             <ConceptIntro step={step} lang={lang} />
             {step === 0 ? (
               <Input
@@ -492,6 +504,7 @@ export default function App() {
             ) : (
               <Prediction key={lesson.sentence} lesson={lesson} lang={lang} />
             )}
+            </div>
             <details className="learn-more" key={`details-${step}`}>
               <summary>{t(lang, "more")}</summary>
               <p>{list(lang, "details")[step]}</p>
@@ -546,6 +559,14 @@ export default function App() {
             onChange={setConfig}
             onClose={() => setSettings(false)}
             onDemo={() => demo()}
+            onCustom={() => {
+              setSettings(false);
+              setMode("live");
+              setSentence(pendingInput.current ?? "");
+              pendingInput.current = null;
+              setError(null);
+              go(0);
+            }}
           />
         </Suspense>
       )}

@@ -1,5 +1,18 @@
 # Research and teaching scope
 
+Gemini speech fallback follows [Google's speech generation documentation](https://ai.google.dev/gemini-api/docs/generate-content/speech-generation), including the AUDIO response modality, prebuilt voice configuration and 16-bit mono PCM decoding. Google lists Malayalam among its [supported speech languages](https://ai.google.dev/gemini-api/docs/speech-generation#supported-languages). Account access is discovered at runtime rather than assumed.
+
+## Product scope and familiar examples
+
+This is an LLM learning lab, not a course covering all AI. The landing page distinguishes the broad AI field, language models and assistant products; it also notes that these areas overlap and modern models can handle multiple input types. Gemini powers custom lesson generation here; ChatGPT and Claude are explanatory references, not integrated providers.
+
+- [OpenAI: text generation](https://developers.openai.com/api/docs/guides/text) explains generating replies with language models and relates it to ChatGPT.
+- [Google DeepMind: Gemini](https://deepmind.google/models/gemini/) describes the Gemini model family and multimodal capabilities.
+- [Anthropic: introducing Claude](https://www.anthropic.com/news/introducing-claude) introduces the assistant; [Claude model family](https://www.anthropic.com/news/claude-3-family) explains model variants and vision capabilities.
+
+
+Speech controls follow the browser [pause/resume API](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/pause) and [utterance completion event](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/end_event). Board advancement is linked to completed narration, not a fixed timer. Voice availability is device-dependent.
+
 The map-address example uses Princess Street, Fort Kochi, from [Kerala Tourism](https://www.keralatourism.org/french/destination/princess-street-fort-kochi/176). Source coordinates 9.967498, 76.244316 are rounded to 9.9675° N, 76.2443° E. The lesson distinguishes a geographic point from illustrative word vectors.
 
 The introduction includes bilingual NLP/LLM definitions and an interactive selection of historical milestones. This is a learning sequence, not an exhaustive history or a claim that older NLP methods disappeared.

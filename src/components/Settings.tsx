@@ -11,18 +11,21 @@ import {
   textModels,
 } from "../lib/gemini";
 import Icon from "./Icon";
+import KeySetupGuide from "./KeySetupGuide";
 export default function Settings({
   lang,
   config,
   onChange,
   onClose,
   onDemo,
+  onCustom,
 }: {
   lang: Language;
   config: Config;
   onChange: (c: Config) => void;
   onClose: () => void;
   onDemo: () => void;
+  onCustom: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const abort = useRef<AbortController | null>(null);
@@ -138,6 +141,7 @@ export default function Settings({
         </button>
       </div>
       <p>{t(lang, "keyIntro")}</p>
+      <KeySetupGuide lang={lang} />
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -244,6 +248,11 @@ export default function Settings({
           onClick={() => void refresh()}
         >
           {t(lang, busy ? "saving" : "refreshModels")}
+        </button>
+      )}
+      {config.key && (
+        <button className="primary full-width" disabled={busy} onClick={onCustom}>
+          {lang === "ml" ? "സ്വന്തം വാക്യം പരീക്ഷിക്കാം" : "Try my own sentence"}
         </button>
       )}
       {config.key && (
