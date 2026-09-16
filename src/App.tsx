@@ -8,9 +8,12 @@ import Embeddings from "./components/steps/Embeddings";
 import Attention from "./components/steps/Attention";
 import Prediction from "./components/steps/Prediction";
 import Icon from "./components/Icon";
+import ConceptIntro from "./components/ConceptIntro";
+import Foundations from "./components/Foundations";
+import Landing from "./components/Landing";
 import {
   chooseModels,
-  generateLesson,
+  generateLessonWithRecovery,
   GeminiError,
   listModels,
   loadConfig,
@@ -30,6 +33,7 @@ type InstallPrompt = Event & {
   userChoice: Promise<{ outcome: string }>;
 };
 export default function App() {
+  const [welcome, setWelcome] = useState(window.location.hash !== "#learn");
   const [lang, setLang] = useState<Language>(
     readPref("ai-ullil-language", "ml") === "en" ? "en" : "ml",
   );
@@ -47,11 +51,31 @@ export default function App() {
   const [settings, setSettings] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<TextKey | null>(null);
+  const [recoveringModel, setRecoveringModel] = useState(false);
+  const [modelSwitched, setModelSwitched] = useState(false);
   const [offlineReady, setOfflineReady] = useState(false);
   const [install, setInstall] = useState<InstallPrompt | null>(null);
   const abort = useRef<AbortController | null>(null);
   const touch = useRef<{ x: number; y: number } | null>(null);
   const heading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    const navigate = () => {
+      const home = window.location.hash !== "#learn";
+      setWelcome(home);
+      if (home) {
+        abort.current?.abort();
+        setBusy(false);
+        setSettings(false);
+      }
+      window.scrollTo({ top: 0, behavior: "instant" });
+      requestAnimationFrame(() => {
+        if (home) document.getElementById("welcome-title")?.focus({ preventScroll: true });
+        else heading.current?.focus({ preventScroll: true });
+      });
+    };
+    window.addEventListener("hashchange", navigate);
+    return () => window.removeEventListener("hashchange", navigate);
+  }, []);
   useEffect(() => {
     document.documentElement.lang = lang;
     try {
@@ -86,6 +110,8 @@ export default function App() {
     };
   }, []);
   function go(n: number) {
+    setWelcome(false);
+    if (window.location.hash !== "#learn") window.location.hash = "learn";
     setStep(Math.max(0, Math.min(4, n)));
     window.scrollTo({ top: 0, behavior: "instant" });
     requestAnimationFrame(() =>
@@ -109,6 +135,8 @@ export default function App() {
   async function start(targetStep = 1) {
     if (busy) return;
     setError(null);
+    setRecoveringModel(false);
+    setModelSwitched(false);
     const input = sentence.trim();
     if (!input) {
       setError("empty");
@@ -142,9 +170,14 @@ export default function App() {
         saveModels(c);
         setConfig(c);
       }
-      const result = await generateLesson(input, c, ac.signal);
+      const result = await generateLessonWithRecovery(input, c, ac.signal, () =>
+        setRecoveringModel(true),
+      );
       if (!ac.signal.aborted) {
-        setLesson(result);
+        saveModels(result.config);
+        setConfig(result.config);
+        setModelSwitched(result.switched);
+        setLesson(result.lesson);
         go(targetStep);
       }
     } catch (e) {
@@ -224,14 +257,17 @@ export default function App() {
   }, []);
   const titles = list(lang, "titles")[step].split("\n");
   return (
-    <div className="app">
+    <div className="app kids-app">
       <header>
         <a
           className="brand"
           href="/"
           onClick={(e) => {
             e.preventDefault();
-            demo();
+            cancel();
+            setSettings(false);
+            setWelcome(true);
+            window.location.hash = "";
           }}
         >
           <img src="/favicon.svg" alt="" width="48" height="48" />
@@ -255,16 +291,16 @@ export default function App() {
           >
             <Icon name={dark ? "sun" : "moon"} />
           </button>
-          <button
+          {!welcome && <button
             className="icon-button"
             aria-label={t(lang, "settings")}
             onClick={() => setSettings(true)}
           >
             <Icon name="settings" />
-          </button>
+          </button>}
         </div>
       </header>
-      <div className="workspace">
+      {welcome ? <Landing lang={lang} onStart={() => go(0)} /> : <><div className="workspace">
         <aside>
           <div className="eyebrow">{t(lang, "journey")}</div>
           <h2>{t(lang, "sidebar")}</h2>
@@ -357,6 +393,7 @@ export default function App() {
             </h1>
             <p className="intro">{list(lang, "comparisons")[step]}</p>
             {step === 0 && (
+              <details className="grownup-notes lesson-settings"><summary>{lang === "ml" ? "മുതിർന്നവരുടെ സഹായത്തോടെ: സ്വന്തം വാക്യം" : "With a grown-up: use your own sentence"}</summary>
               <div
                 className="mode-toggle"
                 role="group"
@@ -382,6 +419,7 @@ export default function App() {
                   {t(lang, "liveMode")}
                 </button>
               </div>
+              </details>
             )}
             {step > 0 && ["cricket", "flying"].includes(lesson.id || "") && (
               <div className="context-switch">
@@ -402,6 +440,12 @@ export default function App() {
                 </div>
               </div>
             )}
+            {modelSwitched && !error && step > 0 && (
+              <p className="success" role="status">
+                {t(lang, "modelSwitched")}{" "}
+                <strong>{config.textModel.replace("models/", "")}</strong>
+              </p>
+            )}
             {error && (
               <div className="error" role="alert">
                 {t(lang, error)}
@@ -409,9 +453,12 @@ export default function App() {
                   <button onClick={() => demo()}>
                     {t(lang, "demoFallback")}
                   </button>
-                  {!config.key && (
+                  {(!config.key ||
+                    error === "errorModelUnavailable" ||
+                    error === "errorRequest" ||
+                    error === "noModel") && (
                     <button onClick={() => setSettings(true)}>
-                      {t(lang, "addKey")}
+                      {t(lang, config.key ? "chooseModel" : "addKey")}
                     </button>
                   )}
                 </div>
@@ -420,10 +467,11 @@ export default function App() {
             {busy && (
               <div className="loading-notice" role="status">
                 <span className="spinner" />
-                {t(lang, "loading")}
+                {t(lang, recoveringModel ? "retryingModel" : "loading")}
                 <button onClick={cancel}>{t(lang, "cancel")}</button>
               </div>
             )}
+            <ConceptIntro step={step} lang={lang} />
             {step === 0 ? (
               <Input
                 lang={lang}
@@ -448,6 +496,7 @@ export default function App() {
               <summary>{t(lang, "more")}</summary>
               <p>{list(lang, "details")[step]}</p>
             </details>
+            {step === 0 && <details className="grownup-notes"><summary>{lang === "ml" ? "കൂടുതൽ കണ്ടെത്താം: NLP, LLM, ചരിത്രം" : "Explore more: NLP, LLMs & their story"}</summary><Foundations lang={lang} /></details>}
             {step > 0 && (
               <Suspense fallback={null}>
                 <RealNumbers
@@ -488,7 +537,7 @@ export default function App() {
             <Icon name={step === 4 ? "loop" : "arrow"} />
           </button>
         </div>
-      </footer>
+      </footer></>}
       {settings && (
         <Suspense fallback={null}>
           <Settings

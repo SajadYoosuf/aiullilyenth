@@ -4,6 +4,7 @@ import { t } from "../../i18n";
 import { attention } from "../../engine/math";
 import MeaningMap from "../MeaningMap";
 import Icon from "../Icon";
+import PaperAttention from "../PaperAttention";
 export default function Attention({
   lesson,
   lang,
@@ -150,6 +151,7 @@ export default function Attention({
         </div>
       </div>
       <p className="fine-print">{t(lang, "rounding")}</p>
+      <PaperAttention lang={lang} />
     </>
   );
 }

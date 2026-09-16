@@ -8,6 +8,7 @@ import {
   removeKey,
   saveConfig,
   saveModels,
+  textModels,
 } from "../lib/gemini";
 import Icon from "./Icon";
 export default function Settings({
@@ -33,12 +34,39 @@ export default function Settings({
   const [status, setStatus] = useState("");
   useEffect(() => {
     dialog.current?.showModal();
+    if (config.key && !config.models.length) void refresh();
     return () => {
       abort.current?.abort();
       dialog.current?.close();
     };
   }, []);
+  async function refresh(recommend = false) {
+    if (!config.key) return;
+    abort.current?.abort();
+    setBusy(true);
+    setError("");
+    setStatus("");
+    const ac = new AbortController();
+    abort.current = ac;
+    try {
+      const models = await listModels(config.key, ac.signal);
+      const next = chooseModels(
+        models,
+        recommend ? { ...config, textModel: "" } : config,
+      );
+      if (ac.signal.aborted) return;
+      saveModels(next);
+      onChange(next);
+      setStatus(t(lang, "modelsRefreshed"));
+    } catch (e) {
+      if (!ac.signal.aborted)
+        setError(t(lang, e instanceof GeminiError ? e.code : "errorData"));
+    } finally {
+      if (!ac.signal.aborted) setBusy(false);
+    }
+  }
   async function save() {
+    abort.current?.abort();
     setError("");
     setStatus("");
     if (!key.trim()) {
@@ -55,6 +83,7 @@ export default function Settings({
         key: key.trim(),
         remember,
       });
+      if (ac.signal.aborted) return;
       saveConfig(next);
       onChange(next);
       setStatus(t(lang, "saved"));
@@ -173,22 +202,22 @@ export default function Settings({
       )}
       {config.models.length > 0 && (
         <div className="model-fields">
+          <p>{t(lang, "modelAccessNote")}</p>
           <label htmlFor="text-model">{t(lang, "textModel")}</label>
           <select
             id="text-model"
             value={config.textModel}
             onChange={(e) => modelChange("textModel", e.target.value)}
           >
-            {config.models
-              .filter((m) =>
-                m.supportedGenerationMethods.includes("generateContent"),
-              )
-              .map((m) => (
-                <option key={m.name} value={m.name}>
-                  {m.displayName}
-                </option>
-              ))}
+            {textModels(config.models).map((m) => (
+              <option key={m.name} value={m.name}>
+                {m.displayName}
+              </option>
+            ))}
           </select>
+          <button disabled={busy} onClick={() => void refresh(true)}>
+            {t(lang, "recommendedModel")}
+          </button>
           <label htmlFor="embedding-model">{t(lang, "embeddingModel")}</label>
           <select
             id="embedding-model"
@@ -207,6 +236,15 @@ export default function Settings({
               ))}
           </select>
         </div>
+      )}
+      {config.key && (
+        <button
+          className="full-width"
+          disabled={busy}
+          onClick={() => void refresh()}
+        >
+          {t(lang, busy ? "saving" : "refreshModels")}
+        </button>
       )}
       {config.key && (
         <button className="remove-key" onClick={remove}>

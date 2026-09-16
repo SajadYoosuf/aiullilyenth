@@ -9,7 +9,12 @@ export interface Lesson {
   safe: true;
   sentence: string;
   teaching_tokens: string[];
-  dimensions: { name_ml: string; name_en: string }[];
+  dimensions: {
+    name_ml: string;
+    name_en: string;
+    meaning_ml?: string;
+    meaning_en?: string;
+  }[];
   words: Word[];
   focus_word: string;
   insight_ml: string;

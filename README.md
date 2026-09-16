@@ -1,5 +1,7 @@
 # AI ഉള്ളിൽ എന്താണ്? · AI Ullil Enthaanu?
 
+Repository: **aiullilyenth**
+
 A Malayalam-first, mobile-first visual lesson about language models. React, Vite, TypeScript and Tailwind CSS. No application backend, accounts, analytics or server-held API keys.
 
 ## Run locally
@@ -55,7 +57,9 @@ Usage is billed to your Google account. Key validity does not guarantee quota fo
 
 The app requests `application/json` with `responseSchema`. Only `safe` is schema-required so Google can legally return `{ "safe": false }`; every teaching field is then required and validated locally for a safe lesson. Coordinates are rounded and clamped to 0–10, focus words must exist, dimensions must number two, words must number 2–6, and prediction choices must number three. Malformed teaching data retries once, then loads a clearly identified demo with a friendly error message. Unsafe or blocked content never renders as a lesson.
 
-The app maps invalid-key, quota, network, blocked-content and data errors to friendly Malayalam/English messages with a demo fallback. Requests have a 15-second timeout and can be cancelled. Typical lesson speed depends on the chosen model, network and quota; the requested ~8-second 4G target requires measurement with a real key and is not guaranteed.
+The app maps invalid-key, quota, network, blocked-content and data errors to friendly Malayalam/English messages with a demo fallback. A generation 404 triggers one fresh model-list request and one attempt with another text model, excluding the failed model even when Google still lists it. A successful replacement is remembered; other errors do not trigger model switching. If no replacement works, the sentence stays in Live mode with a link to choose another model. Requests have a 15-second timeout and can be cancelled. Typical lesson speed depends on the chosen model, network and quota; the requested ~8-second 4G target requires measurement with a real key and is not guaranteed.
+
+Settings reloads the model list for an existing saved key and offers **Refresh model list** and **Use recommended text model**. Default selection favors stable lightweight text models over specialist models, using names returned by Google rather than fixed model IDs. Key validation confirms access to the model list, not generation access to every listed model. Google has [documented Gemini 2.5 access restrictions](https://discuss.ai.google.dev/t/gemini-2-5-flash-visible-via-models-get-and-advertises-generatecontent-but-generatecontent-returns-404-model-or-resource/182253/2) that can produce this exact listed-but-404 behavior.
 
 **See real numbers** sends additional requests only when pressed: `countTokens` for the sentence and `embedContent` for each displayed word, in parallel. It shows the returned vector length, first 20 coordinates, and cosine similarities. If the account has no embedding model, token counts still work. Real embeddings are standalone word embeddings, not the language model's hidden attention states.
 
@@ -98,6 +102,12 @@ Import the source repository, use build command `npm run build` and publish dire
 For any static host, serve the entire `dist` directory at the domain root over HTTPS. The service worker and manifest use root-relative paths. A path-prefix deployment needs matching Vite base, manifest scope/start URL and service-worker asset paths.
 
 ## Verification
+
+The child-focused experience includes a picture guessing game on the welcome page, a friendly illustrated guide, short activity prompts and large demo story choices. Detailed concepts and research remain under expandable sections; custom-sentence mode is labeled for grown-up assistance. This label is guidance, not an access restriction.
+
+The root URL opens a bilingual welcome page explaining the learning experience. “Start exploring” opens the lessons at `#learn`; the brand link returns home and browser Back/Forward switches between home and lessons. Built-in examples require no API key.
+
+The first step introduces NLP versus LLMs in Malayalam and simple English, with an interactive research timeline. The Attention step includes an optional working Q/K/V example of the original Transformer formula and causal masking. See [SOURCES.md](SOURCES.md) for original papers, the Google Research explanation, and the boundary between the simplified lesson and the paper's mathematics.
 
 See `VALIDATION.md` for the recorded test results and remaining limits. Tests use fake keys and mocked Google responses; no credential is included in this project.
 

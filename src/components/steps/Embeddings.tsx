@@ -2,6 +2,8 @@ import { useState } from "react";
 import type { Language, Lesson } from "../../types";
 import { t } from "../../i18n";
 import MeaningMap from "../MeaningMap";
+import DimensionGuide from "../DimensionGuide";
+import AddressExample from "../AddressExample";
 export default function Embeddings({
   lesson,
   lang,
@@ -13,13 +15,16 @@ export default function Embeddings({
   const word = lesson.words.find((w) => w.text === selected) || lesson.words[0];
   return (
     <>
+      <AddressExample lesson={lesson} lang={lang} />
+      <DimensionGuide lesson={lesson} lang={lang} />
       <div className="embedding-grid">
         <div className="number-table">
           <div className="number-row table-head">
             <span>{t(lang, "word")}</span>
             {lesson.dimensions.map((d) => (
               <span key={d.name_en}>
-                {d[lang === "ml" ? "name_ml" : "name_en"]}
+                <span lang="ml">{d.name_ml}</span>
+                <span lang="en">{d.name_en}</span>
               </span>
             ))}
           </div>

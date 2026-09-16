@@ -6,6 +6,8 @@ import {
   saveConfig,
   loadConfig,
   removeKey,
+  chooseModels,
+  generateLessonWithRecovery,
 } from "./index";
 import { demos } from "../../lessons";
 import type { Config } from "../../types";
@@ -107,7 +109,9 @@ describe("Gemini browser client", () => {
   it.each([
     [401, "errorKey"],
     [429, "errorQuota"],
-    [500, "errorData"],
+    [404, "errorModelUnavailable"],
+    [400, "errorRequest"],
+    [500, "errorService"],
   ])("maps HTTP %s to a safe error", async (status, code) => {
     vi.stubGlobal(
       "fetch",
@@ -160,5 +164,120 @@ describe("Gemini browser client", () => {
     expect(result.count).toBe(9);
     expect(result.vectors).toHaveLength(4);
     expect(result.vectors[0].values).toHaveLength(3);
+  });
+  it("recognizes an invalid API key in a generation request", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValue(
+          json({ error: { details: [{ reason: "API_KEY_INVALID" }] } }, 400),
+        ),
+    );
+    await expect(generateLesson("A bat flew", cfg)).rejects.toMatchObject({
+      code: "errorKey",
+    });
+  });
+});
+describe("model availability recovery", () => {
+  const model = (name: string) => ({
+    name,
+    displayName: name,
+    supportedGenerationMethods: ["generateContent"],
+  });
+  const old = model("models/gemini-2.5-flash");
+  const current = model("models/gemini-3.1-flash-lite");
+  const saved = { ...cfg, textModel: old.name, models: [old, current] };
+  it("recovers when a listed model still returns 404, excluding the failed model", async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValueOnce(json({}, 404))
+      .mockResolvedValueOnce(json({ models: [old, current] }))
+      .mockResolvedValueOnce(generated(demos[1]));
+    vi.stubGlobal("fetch", fetch);
+    const onRecovery = vi.fn();
+    const result = await generateLessonWithRecovery(
+      "A bat flew",
+      saved,
+      undefined,
+      onRecovery,
+    );
+    expect(result.switched).toBe(true);
+    expect(result.config.textModel).toBe(current.name);
+    expect(result.config.key).toBe(cfg.key);
+    expect(result.lesson.sentence).toBe("A bat flew");
+    expect(onRecovery).toHaveBeenCalledOnce();
+    expect(fetch.mock.calls.map((c) => c[0])).toEqual([
+      `https://generativelanguage.googleapis.com/v1beta/${old.name}:generateContent`,
+      "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000",
+      `https://generativelanguage.googleapis.com/v1beta/${current.name}:generateContent`,
+    ]);
+    expect(fetch.mock.calls[1][1].cache).toBe("no-store");
+    for (const [url, options] of fetch.mock.calls) {
+      expect(url).not.toContain(cfg.key);
+      expect(options.headers["x-goog-api-key"]).toBe(cfg.key);
+    }
+  });
+  it("keeps a working selected model without extra discovery or generation calls", async () => {
+    const fetch = vi.fn().mockResolvedValue(generated(demos[1]));
+    vi.stubGlobal("fetch", fetch);
+    const result = await generateLessonWithRecovery("A bat flew", saved);
+    expect(result.switched).toBe(false);
+    expect(result.config.textModel).toBe(old.name);
+    expect(fetch).toHaveBeenCalledOnce();
+  });
+  it("stops after one alternative and does not loop through billable models", async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValueOnce(json({}, 404))
+      .mockResolvedValueOnce(
+        json({ models: [old, current, model("models/other")] }),
+      )
+      .mockResolvedValueOnce(json({}, 404));
+    vi.stubGlobal("fetch", fetch);
+    await expect(
+      generateLessonWithRecovery("A bat flew", saved),
+    ).rejects.toMatchObject({ code: "errorModelUnavailable" });
+    expect(fetch).toHaveBeenCalledTimes(3);
+  });
+  it("reports model availability when no other text model exists", async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValueOnce(json({}, 404))
+      .mockResolvedValueOnce(
+        json({ models: [old, model("models/gemini-image")] }),
+      );
+    vi.stubGlobal("fetch", fetch);
+    await expect(
+      generateLessonWithRecovery("A bat flew", saved),
+    ).rejects.toMatchObject({ code: "errorModelUnavailable" });
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+  it.each([401, 429, 503])(
+    "does not switch models for HTTP %s",
+    async (status) => {
+      const fetch = vi.fn().mockResolvedValue(json({}, status));
+      vi.stubGlobal("fetch", fetch);
+      await expect(
+        generateLessonWithRecovery("A bat flew", saved),
+      ).rejects.toBeInstanceOf(Error);
+      expect(fetch).toHaveBeenCalledOnce();
+    },
+  );
+  it("chooses current stable lightweight text models without fixed model IDs", () => {
+    const models = [
+      model("models/gemini-9.4-flash-image"),
+      model("models/gemini-2.5-flash"),
+      model("models/gemini-9.3-flash-lite"),
+      model("models/gemini-9.4-flash-lite-preview"),
+      model("models/gemini-8.9-flash-lite"),
+    ];
+    expect(chooseModels(models, { ...cfg, textModel: "" }).textModel).toBe(
+      "models/gemini-9.3-flash-lite",
+    );
+    expect(
+      chooseModels(models, { ...cfg, textModel: "models/gemini-2.5-flash" })
+        .textModel,
+    ).toBe("models/gemini-2.5-flash");
   });
 });

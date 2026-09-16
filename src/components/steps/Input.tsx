@@ -16,7 +16,7 @@ export default function Input({
 }) {
   return (
     <>
-      <div className="input-card">
+      {mode !== "demo" && <div className="input-card">
         <label htmlFor="sentence">{t(lang, "sentence")}</label>
         <textarea
           id="sentence"
@@ -36,8 +36,8 @@ export default function Input({
             {sentence.trim() ? sentence.trim().split(/\s+/).length : 0} / 12
           </span>
         </div>
-      </div>
-      <p className="example-label">{t(lang, "examples")}</p>
+      </div>}
+      <p className="example-label">{lang === "ml" ? "ഒരു കഥ തിരഞ്ഞെടുക്കൂ" : "Pick a little story"}</p>
       <div className="example-chips">
         {demos.map((l, i) => (
           <button
@@ -45,10 +45,11 @@ export default function Input({
             onClick={() => onExample(i)}
             key={l.id}
           >
-            {l.sentence}
+            <span className="story-icon" aria-hidden="true">{["💬", "🏏", "🦇"][i]}</span>{l.sentence}
           </button>
         ))}
       </div>
+      {mode === "demo" && <p className="chosen-story" role="status">{lang === "ml" ? "നിന്റെ വാക്യം: " : "Your sentence: "}<strong>{sentence}</strong></p>}
       <div className="journey-preview">
         <span className="eyebrow">{t(lang, "sentenceJourney")}</span>
         <svg

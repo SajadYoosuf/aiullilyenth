@@ -61,6 +61,8 @@ export function validateLesson(raw: unknown): Lesson | { safe: false } {
     dimensions: r.dimensions.map((d: any) => ({
       name_ml: d.name_ml,
       name_en: d.name_en,
+      ...(str(d.meaning_ml, 300) ? { meaning_ml: d.meaning_ml } : {}),
+      ...(str(d.meaning_en, 300) ? { meaning_en: d.meaning_en } : {}),
     })),
     words: r.words.map((w: any) => ({
       text: w.text,

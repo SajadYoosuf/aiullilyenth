@@ -1,5 +1,24 @@
 import type { Language } from "../types";
 const strings = {
+  understandFirst: ["ആദ്യം അർത്ഥം മനസ്സിലാക്കാം", "FIRST, UNDERSTAND THE IDEA"],
+  dimensionHeading: [
+    "ഈ രണ്ട് പേരുകൾ എന്താണ്?",
+    "What do these two labels mean?",
+  ],
+  dimensionDefinition: [
+    "Dimension എന്നത് ഇവിടെ അർത്ഥം നോക്കാനുള്ള ഒരു അളവുകോലാണ്. ഒരു പഴത്തെ മധുരം, പുളിപ്പ് എന്നിങ്ങനെ നോക്കുന്നതുപോലെ, വാക്കുകളെ രണ്ട് ആശയങ്ങളുമായി താരതമ്യം ചെയ്യാം.",
+    "A dimension is one scale for comparing meaning in this example. Just as we can compare fruit by sweetness and sourness, we can compare words using two ideas.",
+  ],
+  dimensionFallback: [
+    "മുകളിലെ പേരുള്ള ആശയവുമായി ഒരു വാക്കിന് എത്ര ബന്ധമുണ്ടെന്ന് കാണിക്കാനുള്ള അളവുകോൽ.",
+    "This scale shows how strongly a word relates to the idea named above.",
+  ],
+  dimensionCaveat: [
+    "0 = ഈ ആശയവുമായി ബന്ധം കുറവ്; 10 = ബന്ധം കൂടുതൽ. ഇവ പഠിക്കാൻ ഉണ്ടാക്കിയ അക്കങ്ങളാണ്. യഥാർത്ഥ LLM-ൽ “സൗഹൃദം”, “ആവേശം” എന്നിങ്ങനെ പ്രത്യേകം പേരിട്ട അളവുകോലുകൾ ഉണ്ടെന്ന് അർത്ഥമില്ല.",
+    "0 means less connection to this idea; 10 means more. These scores are made for learning. A real LLM does not have fixed, neatly named “friendliness” or “excitement” scales like this.",
+  ],
+  less: ["ബന്ധം കുറവ്", "Less connection"],
+  moreOf: ["ബന്ധം കൂടുതൽ", "More connection"],
   brand: ["AI ഉള്ളിൽ എന്താണ്?", "AI Ullil Enthaanu?"],
   tagline: ["A LITTLE AI LEARNING LAB", "A LITTLE AI LEARNING LAB"],
   journey: ["ഒരു ചെറിയ യാത്ര", "A little journey"],
@@ -63,14 +82,14 @@ const strings = {
     [
       "നിങ്ങൾ എഴുതുന്ന വാക്കുകൾ ഒരു മറുപടിയാകുന്നത് എങ്ങനെ? നമുക്ക് കണ്ടറിയാം.",
       "പസിലിന്റെ കഷണങ്ങൾ പോലെ, AI വാചകത്തെ ചെറിയ ഭാഗങ്ങളാക്കുന്നു.",
-      "ഒരു മാപ്പിലെ സ്ഥലം പോലെ, വാക്കിന്റെ അർത്ഥത്തിന് അക്കങ്ങൾ കൊണ്ട് ഒരു വിലാസം.",
+      "മാപ്പിൽ latitude, longitude ഒരു സ്ഥലം കാണിക്കുന്നു. അതുപോലെ, നമ്മുടെ പഠനമാപ്പിൽ രണ്ട് അക്കങ്ങൾ ഒരു വാക്കിന്റെ സ്ഥാനം കാണിക്കും. ഒരു ഉദാഹരണം നോക്കാം!",
       "ഒരു മുറിയിൽ മറ്റുള്ളവരെ കേൾക്കുന്നതുപോലെ, വാക്കുകൾ ചുറ്റുമുള്ള വാക്കുകളെ ശ്രദ്ധിക്കുന്നു.",
       "ഫോണിലെ കീബോർഡ് പോലെ, അടുത്ത് വരാൻ സാധ്യതയുള്ള വാക്കുകൾ AI കണക്കാക്കുന്നു.",
     ],
     [
       "How do the words you type turn into a reply? Let’s find out, one small step at a time.",
       "Like puzzle pieces, tokens are small parts that fit together to make a sentence.",
-      "Like a place on a map, numbers give a word an address in meaning-space.",
+      "Latitude and longitude locate a place on a map. On our learning map, two numbers locate a word. Let’s see an example!",
       "Like listening to people in a room, each word pays attention to the words around it.",
       "Like your phone’s keyboard, AI scores what might come next.",
     ],
@@ -183,7 +202,44 @@ const strings = {
   ],
   save: ["പരിശോധിച്ച് സൂക്ഷിക്കുക", "Validate and save"],
   saving: ["പരിശോധിക്കുന്നു…", "Checking…"],
-  saved: ["Key തയ്യാറാണ് · Key validated", "Key validated · Key തയ്യാറാണ്"],
+  saved: [
+    "Key സ്വീകരിച്ചു · മോഡൽ പട്ടിക ലഭിച്ചു",
+    "Key accepted · Model list loaded",
+  ],
+  chooseModel: ["മറ്റൊരു മോഡൽ തിരഞ്ഞെടുക്കൂ", "Choose another model"],
+  refreshModels: ["മോഡൽ പട്ടിക പുതുക്കൂ", "Refresh model list"],
+  recommendedModel: [
+    "ശുപാർശ ചെയ്യുന്ന മോഡൽ ഉപയോഗിക്കൂ",
+    "Use recommended text model",
+  ],
+  modelsRefreshed: [
+    "മോഡൽ പട്ടിക പുതുക്കി. ഇനി വീണ്ടും ശ്രമിക്കാം.",
+    "Models refreshed. You can try your lesson again.",
+  ],
+  modelAccessNote: [
+    "പട്ടികയിൽ ഉള്ള എല്ലാ മോഡലുകളും നിങ്ങളുടെ അക്കൗണ്ടിൽ പ്രവർത്തിക്കണമെന്നില്ല. 404 വന്നാൽ മറ്റൊരു മോഡൽ തിരഞ്ഞെടുക്കൂ.",
+    "A listed model may still be unavailable to your account. If it returns 404, choose another text model. Listing models does not test lesson generation.",
+  ],
+  retryingModel: [
+    "ഈ മോഡൽ ലഭ്യമല്ല. മറ്റൊരു മോഡൽ ശ്രമിക്കുന്നു…",
+    "This model is unavailable. Trying another text model…",
+  ],
+  modelSwitched: [
+    "പഴയ മോഡൽ ലഭ്യമല്ല. ഈ പാഠത്തിന് ഉപയോഗിച്ചത്:",
+    "The previous model was unavailable. This lesson uses:",
+  ],
+  errorModelUnavailable: [
+    "തിരഞ്ഞെടുത്ത മോഡൽ ഈ അക്കൗണ്ടിൽ ലഭ്യമല്ല (404). ക്രമീകരണങ്ങളിൽ പട്ടിക പുതുക്കി മറ്റൊരു മോഡൽ തിരഞ്ഞെടുക്കൂ.",
+    "This model is unavailable to your account (404). Refresh the model list in Settings and choose another text model.",
+  ],
+  errorRequest: [
+    "ഈ മോഡൽ പാഠത്തിന്റെ രൂപം സ്വീകരിച്ചില്ല. മറ്റൊരു text മോഡൽ തിരഞ്ഞെടുക്കൂ.",
+    "This model could not accept the lesson format. Choose another text model in Settings.",
+  ],
+  errorService: [
+    "Google സേവനം ഇപ്പോൾ ലഭ്യമല്ല. കുറച്ചു കഴിഞ്ഞ് വീണ്ടും ശ്രമിക്കൂ.",
+    "Google’s service is temporarily unavailable. Try again shortly.",
+  ],
   removed: [
     "Key നീക്കം ചെയ്തു · Key removed",
     "Key removed · Key നീക്കം ചെയ്തു",
@@ -267,3 +323,123 @@ export const list = (
     | "details"
     | "previewLabels",
 ) => strings[key][lang === "ml" ? 0 : 1];
+
+export const concepts = [
+  {
+    term: "LLM · Large Language Model · വലിയ ഭാഷാ മോഡൽ",
+    ml: {
+      meaning:
+        "LLM എന്നത് ധാരാളം എഴുത്തിൽ നിന്ന് ഭാഷയിലെ ബന്ധങ്ങൾ പഠിച്ച ഒരു കമ്പ്യൂട്ടർ സംവിധാനമാണ്. കൊടുത്ത വാചകത്തിന് ശേഷം എന്ത് വരാം എന്ന് അത് കണക്കാക്കി മറുപടി ഉണ്ടാക്കുന്നു.",
+      example:
+        "പഠിക്കൽ (Training): പല ഉദാഹരണങ്ങൾ കണ്ടാണ് ഇത് പഠിക്കുന്നത്. “ഞാൻ വെള്ളം…” എന്നു കണ്ടാൽ “കുടിച്ചു” എന്നു തുടരാം. ഇത് മനുഷ്യനെപ്പോലെ ചിന്തിക്കുന്നു എന്നോ മറുപടി എപ്പോഴും ശരിയാണ് എന്നോ അർത്ഥമില്ല.",
+    },
+    en: {
+      meaning:
+        "An LLM is a computer system trained on lots of text. It learns language patterns and builds a reply by predicting what text could come next.",
+      example:
+        "Training means learning from examples. “I drank…” could continue with “water”. A likely answer can still be wrong. In the next steps, we will explore tokens, embeddings, context, attention and prediction.",
+    },
+  },
+  {
+    term: "Token · എഴുത്തിന്റെ ചെറിയ കഷണം",
+    ml: {
+      meaning:
+        "LLM എഴുത്ത് ചെറിയ കഷണങ്ങളായാണ് കൈകാര്യം ചെയ്യുന്നത്. ഓരോ കഷണത്തെയും token എന്നു പറയുന്നു. അത് ഒരു വാക്കോ, വാക്കിന്റെ ഭാഗമോ, ഒരു ചിഹ്നമോ ആകാം.",
+      example:
+        "ഉദാഹരണം: “മോനേ” എന്നത് ഇവിടെ “മോ” + “നേ” ആയി കാണിക്കുന്നു. ഇത് പഠിക്കാനുള്ള വിഭജനം മാത്രം; യഥാർത്ഥ മോഡൽ മറ്റൊരു രീതിയിൽ മുറിക്കാം.",
+    },
+    en: {
+      meaning:
+        "A token is a small piece of text that a model works with. It may be a word, part of a word, or punctuation.",
+      example:
+        "Like puzzle pieces: we show “മോനേ” as “മോ” + “നേ”. This teaching split is not the real model’s tokenizer.",
+    },
+  },
+  {
+    term: "Embedding · വാക്കിനെ സൂചിപ്പിക്കുന്ന അക്കങ്ങളുടെ പട്ടിക",
+    ml: {
+      meaning:
+        "കമ്പ്യൂട്ടറിന് കണക്കുകൂട്ടാൻ, ഓരോ token-നെയും അക്കങ്ങളുടെ ഒരു പട്ടികയായി മാറ്റുന്നു. ഇതാണ് embedding. ഭാഷയിലെ ബന്ധങ്ങൾ ഈ അക്കങ്ങളിൽ പ്രതിഫലിക്കാം.",
+      example:
+        "ഒരു മാപ്പിലെ വിലാസം പോലെ ചിന്തിക്കൂ. ഇവിടെ [3, 4] എന്നാൽ ആദ്യ അളവുകോലിൽ 3, രണ്ടാമത്തേതിൽ 4. ഇവ എന്തിന്റെ അളവുകോലുകളാണെന്ന് ആദ്യം താഴെ വായിക്കാം.",
+    },
+    en: {
+      meaning:
+        "An embedding is a list of numbers representing a token. The model can calculate with these numbers, which can capture relationships in language.",
+      example:
+        "Think of an address on a map. Here, [3, 4] means 3 on the first scale and 4 on the second. Read what those scales mean before looking at the table.",
+    },
+  },
+  {
+    term: "Context + Attention · സാഹചര്യം + ശ്രദ്ധ",
+    ml: {
+      meaning:
+        "Context എന്നത് കൂടെയുള്ള വാക്കുകളാണ്. Attention എന്നത് ആ വാക്കുകളിൽ നിന്ന് എത്ര വിവരം എടുക്കണമെന്ന് കണക്കാക്കുന്ന രീതിയാണ്. ഇവിടെ മുഴുവൻ വാചകവും ഉപയോഗിക്കുന്ന ഒരു ലളിതമായ ഉദാഹരണമാണ്.",
+      example:
+        "“bat hit the ball” എന്നതിൽ bat ക്രിക്കറ്റ് ബാറ്റാകാം. “bat flew” എന്നതിൽ അത് വവ്വാലാണ്. കൂടെയുള്ള വാക്കുകൾ അർത്ഥം വ്യക്തമാക്കുന്നു. ശതമാനം കാണിക്കുന്നത് ഈ ഉദാഹരണത്തിലെ ശ്രദ്ധയുടെ വിഹിതമാണ്; ഉത്തരം ശരിയാകാനുള്ള സാധ്യതയല്ല.",
+    },
+    en: {
+      meaning:
+        "Context is the surrounding text. Attention calculates how much information to take from available tokens. This lesson uses a simplified example with the whole sentence.",
+      example:
+        "“Bat hit the ball” suggests a cricket bat; “bat flew” suggests an animal. The attention percentages show shares of attention, not the chance that an answer is correct.",
+    },
+  },
+  {
+    term: "Prediction · അടുത്ത കഷണം എന്താകാം?",
+    ml: {
+      meaning:
+        "അടുത്ത് വരാവുന്ന token-കൾക്ക് മോഡൽ സാധ്യതകൾ കണക്കാക്കുന്നു. ഒന്നിനെ തിരഞ്ഞെടുത്ത് വാചകത്തിൽ ചേർക്കുന്നു. പിന്നെ അടുത്ത token കണ്ടെത്തുന്നു. ഇങ്ങനെയാണ് മറുപടി വളരുന്നത്.",
+      example:
+        "ഫോണിൽ “സുഖം” എഴുതുമ്പോൾ “ആണോ?” എന്നു നിർദ്ദേശിക്കുന്നതുപോലെ. സാധ്യത കൂടുതലായതുകൊണ്ട് ഒരു വാചകം സത്യമായിരിക്കണമെന്നില്ല. ഇവിടെ കാണുന്ന ശതമാനങ്ങൾ പഠിക്കാൻ ഉണ്ടാക്കിയതാണ്.",
+    },
+    en: {
+      meaning:
+        "The model scores possible next tokens, selects one and adds it to the text. It repeats this process to build a reply.",
+      example:
+        "Like your phone suggesting “you?” after “How are”. A likely continuation is not necessarily true. The percentages here are made for teaching.",
+    },
+  },
+];
+
+const friendship = {
+  ml: "കൂട്ടുകാരോട് അടുപ്പത്തോടെയും നല്ല മനസ്സോടെയും ഇടപെടുന്ന ഭാവം. ഉദാഹരണം: “നമുക്ക് ഒരുമിച്ച് കളിക്കാം.”",
+  en: "Friendship or friendliness: being warm and kind to someone. Example: “Let’s play together.”",
+};
+const excitement = {
+  ml: "എന്തെങ്കിലും ചെയ്യാനോ സംഭവിക്കാനോ ഉള്ള വലിയ ഉത്സാഹം. ഉദാഹരണം: “വാ, കളി തുടങ്ങാം!”",
+  en: "Excitement or enthusiasm: feeling eager about something. Example: “Come on, let’s start the game!”",
+};
+const affection = {
+  ml: "ഒരാളോട് തോന്നുന്ന ഇഷ്ടവും കരുതലും. ഉദാഹരണം: സ്നേഹത്തോടെ “മോനേ” എന്നു വിളിക്കുന്നത്.",
+  en: "Affection: caring about someone and showing warmth, such as calling a child “dear”.",
+};
+const mocking = {
+  ml: "ഒരാളെ കളിയാക്കുന്ന ഭാവം. അതേ വാക്ക് പറയുന്ന സാഹചര്യത്തിന് അനുസരിച്ച് സ്നേഹമായോ കളിയാക്കലായോ തോന്നാം.",
+  en: "Mocking: teasing or making fun of someone. The same word can sound kind or teasing in different contexts.",
+};
+const sports = {
+  ml: "ഒരു വാക്കിന് കളികളുമായി ഉള്ള ബന്ധം. ഇവിടെ Sachin, hit, ball എന്നിവ ക്രിക്കറ്റിനെ ഓർമ്മിപ്പിക്കുന്നു.",
+  en: "Sports-ness: connection to sports. Sachin, hit and ball are clues about cricket.",
+};
+const animal = {
+  ml: "ഒരു വാക്കിന് ജീവികളുമായി ഉള്ള ബന്ധം. ഇവിടെ flew, night എന്നിവ വവ്വാലിനെ തിരിച്ചറിയാൻ സഹായിക്കുന്നു.",
+  en: "Animal-ness: connection to animals. Flew and night help us recognize a flying bat.",
+};
+export const dimensionGlossary: Record<string, { ml: string; en: string }> = {
+  സൗഹൃദം: friendship,
+  friendliness: friendship,
+  friendship,
+  ആവേശം: excitement,
+  ഉത്സാഹം: excitement,
+  excitement,
+  enthusiasm: excitement,
+  സ്നേഹം: affection,
+  affection,
+  പരിഹാസം: mocking,
+  mocking,
+  കളി: sports,
+  "sports-ness": sports,
+  ജീവി: animal,
+  "animal-ness": animal,
+};
