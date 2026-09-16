@@ -1,0 +1,218 @@
+import { useEffect, useRef, useState } from "react";
+import type { Config, Language } from "../types";
+import { t } from "../i18n";
+import {
+  chooseModels,
+  GeminiError,
+  listModels,
+  removeKey,
+  saveConfig,
+  saveModels,
+} from "../lib/gemini";
+import Icon from "./Icon";
+export default function Settings({
+  lang,
+  config,
+  onChange,
+  onClose,
+  onDemo,
+}: {
+  lang: Language;
+  config: Config;
+  onChange: (c: Config) => void;
+  onClose: () => void;
+  onDemo: () => void;
+}) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const abort = useRef<AbortController | null>(null);
+  const [key, setKey] = useState(config.key);
+  const [remember, setRemember] = useState(config.remember);
+  const [show, setShow] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [status, setStatus] = useState("");
+  useEffect(() => {
+    dialog.current?.showModal();
+    return () => {
+      abort.current?.abort();
+      dialog.current?.close();
+    };
+  }, []);
+  async function save() {
+    setError("");
+    setStatus("");
+    if (!key.trim()) {
+      setError(t(lang, "errorKey"));
+      return;
+    }
+    setBusy(true);
+    const ac = new AbortController();
+    abort.current = ac;
+    try {
+      const models = await listModels(key.trim(), ac.signal);
+      const next = chooseModels(models, {
+        ...config,
+        key: key.trim(),
+        remember,
+      });
+      saveConfig(next);
+      onChange(next);
+      setStatus(t(lang, "saved"));
+    } catch (e) {
+      if (!ac.signal.aborted)
+        setError(t(lang, e instanceof GeminiError ? e.code : "errorData"));
+    } finally {
+      if (!ac.signal.aborted) setBusy(false);
+    }
+  }
+  function remove() {
+    abort.current?.abort();
+    setBusy(false);
+    try {
+      removeKey();
+      setKey("");
+      onChange({ ...config, key: "", remember: false });
+      setRemember(false);
+      setStatus(t(lang, "removed"));
+      setError("");
+    } catch {
+      setError(t(lang, "errorStorage"));
+    }
+  }
+  function modelChange(field: "textModel" | "embeddingModel", value: string) {
+    const next = { ...config, [field]: value };
+    try {
+      saveModels(next);
+      onChange(next);
+    } catch {
+      setError(t(lang, "errorStorage"));
+    }
+  }
+  return (
+    <dialog
+      ref={dialog}
+      onCancel={onClose}
+      className="settings-dialog"
+      aria-labelledby="settings-title"
+    >
+      <div className="dialog-heading">
+        <div>
+          <div className="eyebrow">{t(lang, "settings")}</div>
+          <h2 id="settings-title">{t(lang, "keyTitle")}</h2>
+        </div>
+        <button
+          className="icon-button"
+          aria-label={t(lang, "close")}
+          onClick={onClose}
+        >
+          <Icon name="close" />
+        </button>
+      </div>
+      <p>{t(lang, "keyIntro")}</p>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          void save();
+        }}
+      >
+        <label htmlFor="api-key">{t(lang, "keyLabel")}</label>
+        <div className="key-field">
+          <input
+            autoFocus
+            id="api-key"
+            type={show ? "text" : "password"}
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            autoComplete="off"
+            spellCheck={false}
+            autoCapitalize="none"
+          />
+          <button
+            type="button"
+            onClick={() => setShow(!show)}
+            aria-pressed={show}
+          >
+            {t(lang, show ? "hide" : "show")}
+          </button>
+        </div>
+        <label className="check-label">
+          <input
+            type="checkbox"
+            checked={remember}
+            onChange={(e) => setRemember(e.target.checked)}
+          />
+          <span>{t(lang, "remember")}</span>
+        </label>
+        <p className="privacy-note">
+          <Icon name="key" />
+          {t(lang, "notice")}
+        </p>
+        <a
+          className="external-link"
+          href="https://aistudio.google.com/apikey"
+          target="_blank"
+          rel="noreferrer"
+        >
+          {t(lang, "createKey")} ↗
+        </a>
+        <button type="submit" className="primary full-width" disabled={busy}>
+          {t(lang, busy ? "saving" : "save")}
+          {busy && <span className="spinner" />}
+        </button>
+      </form>
+      {status && (
+        <p className="success" role="status">
+          {status}
+        </p>
+      )}
+      {error && (
+        <div className="error" role="alert">
+          {error}
+          <button onClick={onDemo}>{t(lang, "demoFallback")}</button>
+        </div>
+      )}
+      {config.models.length > 0 && (
+        <div className="model-fields">
+          <label htmlFor="text-model">{t(lang, "textModel")}</label>
+          <select
+            id="text-model"
+            value={config.textModel}
+            onChange={(e) => modelChange("textModel", e.target.value)}
+          >
+            {config.models
+              .filter((m) =>
+                m.supportedGenerationMethods.includes("generateContent"),
+              )
+              .map((m) => (
+                <option key={m.name} value={m.name}>
+                  {m.displayName}
+                </option>
+              ))}
+          </select>
+          <label htmlFor="embedding-model">{t(lang, "embeddingModel")}</label>
+          <select
+            id="embedding-model"
+            value={config.embeddingModel}
+            onChange={(e) => modelChange("embeddingModel", e.target.value)}
+          >
+            <option value="">{t(lang, "noEmbedding")}</option>
+            {config.models
+              .filter((m) =>
+                m.supportedGenerationMethods.includes("embedContent"),
+              )
+              .map((m) => (
+                <option key={m.name} value={m.name}>
+                  {m.displayName}
+                </option>
+              ))}
+          </select>
+        </div>
+      )}
+      {config.key && (
+        <button className="remove-key" onClick={remove}>
+          {t(lang, "remove")}
+        </button>
+      )}
+    </dialog>
+  );
+}

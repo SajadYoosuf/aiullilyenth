@@ -1,0 +1,72 @@
+[
+  {
+    "id": "cricket",
+    "source": "demo",
+    "safe": true,
+    "sentence": "Sachin hit the ball with a bat",
+    "teaching_tokens": ["Sach", "in", "hit", "the", "ball", "with", "a", "bat"],
+    "dimensions": [
+      { "name_ml": "കളി", "name_en": "Sports-ness" },
+      { "name_ml": "ജീവി", "name_en": "Animal-ness" }
+    ],
+    "words": [
+      {
+        "text": "bat",
+        "x": 5,
+        "y": 5,
+        "meaning_ml": "ക്രിക്കറ്റ് ബാറ്റോ വവ്വാലോ?"
+      },
+      {
+        "text": "Sachin",
+        "x": 7,
+        "y": 1,
+        "meaning_ml": "ക്രിക്കറ്റ് കളിക്കാരൻ"
+      },
+      { "text": "hit", "x": 8, "y": 1, "meaning_ml": "പന്ത് അടിക്കുന്നു" },
+      { "text": "ball", "x": 9, "y": 0, "meaning_ml": "കളിയിലെ പന്ത്" }
+    ],
+    "focus_word": "bat",
+    "insight_ml": "Sachin, hit, ball — ഇവ കേൾക്കുമ്പോൾ ‘bat’ ക്രിക്കറ്റ് ബാറ്റാണെന്ന് മനസ്സിലാകും.",
+    "insight_en": "Sachin, hit and ball pull “bat” toward sports: a cricket bat.",
+    "next_word_options": [
+      { "text": "and", "percent": 55 },
+      { "text": ".", "percent": 30 },
+      { "text": "today", "percent": 15 }
+    ]
+  },
+  {
+    "id": "flying",
+    "source": "demo",
+    "safe": true,
+    "sentence": "The bat flew at night",
+    "teaching_tokens": ["The", "bat", "flew", "at", "night"],
+    "dimensions": [
+      { "name_ml": "കളി", "name_en": "Sports-ness" },
+      { "name_ml": "ജീവി", "name_en": "Animal-ness" }
+    ],
+    "words": [
+      {
+        "text": "bat",
+        "x": 5,
+        "y": 5,
+        "meaning_ml": "ക്രിക്കറ്റ് ബാറ്റോ വവ്വാലോ?"
+      },
+      { "text": "flew", "x": 1, "y": 8, "meaning_ml": "പറന്നു" },
+      { "text": "night", "x": 0, "y": 8, "meaning_ml": "രാത്രി" },
+      {
+        "text": "dark",
+        "x": 2,
+        "y": 6,
+        "meaning_ml": "ഇരുട്ട് — രാത്രിയോട് ചേർത്ത ഒരു സൂചന"
+      }
+    ],
+    "focus_word": "bat",
+    "insight_ml": "flew, night — ഇവ കേൾക്കുമ്പോൾ ‘bat’ വവ്വാലാണെന്ന് മനസ്സിലാകും. ‘dark’ ഒരു അധിക സൂചനയാണ്.",
+    "insight_en": "Flew and night pull “bat” toward an animal. “Dark” is an extra teaching clue for night.",
+    "next_word_options": [
+      { "text": ".", "percent": 60 },
+      { "text": "and", "percent": 28 },
+      { "text": "silently", "percent": 12 }
+    ]
+  }
+]

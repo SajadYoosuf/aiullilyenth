@@ -1,0 +1,30 @@
+{
+  "id": "malayalam",
+  "source": "demo",
+  "safe": true,
+  "sentence": "നീ പോ മോനേ ദിനേശാ",
+  "teaching_tokens": ["നീ", "പോ", "മോ", "നേ", "ദി", "നേ", "ശാ"],
+  "dimensions": [
+    { "name_ml": "സ്നേഹം", "name_en": "Affection" },
+    { "name_ml": "പരിഹാസം", "name_en": "Mocking" }
+  ],
+  "words": [
+    { "text": "നീ", "x": 3, "y": 4, "meaning_ml": "നിന്നോട് പറയുകയാണ്" },
+    { "text": "പോ", "x": 1, "y": 9, "meaning_ml": "ഇവിടെ കളിയാക്കുന്ന ഭാവം" },
+    {
+      "text": "മോനേ",
+      "x": 5,
+      "y": 5,
+      "meaning_ml": "സ്നേഹമോ പരിഹാസമോ? അടുത്ത വാക്കുകൾ സഹായിക്കും."
+    },
+    { "text": "ദിനേശാ", "x": 4, "y": 2, "meaning_ml": "വിളിക്കുന്ന ആളുടെ പേര്" }
+  ],
+  "focus_word": "മോനേ",
+  "insight_ml": "‘പോ’ കൂടി കേൾക്കുമ്പോൾ ‘മോനേ’ എന്ന വിളിയിൽ കളിയാക്കൽ കൂടുന്നു!",
+  "insight_en": "When “മോനേ” listens to “പോ”, its meaning shifts toward teasing.",
+  "next_word_options": [
+    { "text": "ഹഹ!", "percent": 58 },
+    { "text": "ഇത് നരസിംഹം", "percent": 27 },
+    { "text": "ക്ഷമിക്കണം", "percent": 6 }
+  ]
+}

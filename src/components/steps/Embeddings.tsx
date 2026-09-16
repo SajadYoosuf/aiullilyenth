@@ -1,0 +1,63 @@
+import { useState } from "react";
+import type { Language, Lesson } from "../../types";
+import { t } from "../../i18n";
+import MeaningMap from "../MeaningMap";
+export default function Embeddings({
+  lesson,
+  lang,
+}: {
+  lesson: Lesson;
+  lang: Language;
+}) {
+  const [selected, setSelected] = useState(lesson.focus_word);
+  const word = lesson.words.find((w) => w.text === selected) || lesson.words[0];
+  return (
+    <>
+      <div className="embedding-grid">
+        <div className="number-table">
+          <div className="number-row table-head">
+            <span>{t(lang, "word")}</span>
+            {lesson.dimensions.map((d) => (
+              <span key={d.name_en}>
+                {d[lang === "ml" ? "name_ml" : "name_en"]}
+              </span>
+            ))}
+          </div>
+          {lesson.words.map((w, i) => (
+            <button
+              key={w.text}
+              className={`number-row ${selected === w.text ? "active-row" : ""}`}
+              aria-pressed={selected === w.text}
+              onClick={() => setSelected(w.text)}
+            >
+              <span>
+                <i className={`color-dot tone-${i % 5}`} />
+                {w.text}
+              </span>
+              <span>{w.x}</span>
+              <span>{w.y}</span>
+            </button>
+          ))}
+        </div>
+        <div className="visual-card">
+          <MeaningMap
+            lesson={lesson}
+            lang={lang}
+            selected={word.text}
+            onSelect={setSelected}
+          />
+        </div>
+      </div>
+      <div className="selection-card">
+        <span>{t(lang, "coordinate")}</span>
+        <strong>
+          {word.text}{" "}
+          <code>
+            [ {word.x}, {word.y} ]
+          </code>
+        </strong>
+        <span>{t(lang, "mapHint")}</span>
+      </div>
+    </>
+  );
+}
